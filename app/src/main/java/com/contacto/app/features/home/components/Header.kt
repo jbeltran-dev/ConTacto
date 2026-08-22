@@ -83,6 +83,7 @@ fun Header(
                     )
                 )
             )
+            .windowInsetsPadding(WindowInsets.statusBars)
     ) {
 
         // Decorative elements

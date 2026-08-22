@@ -1,4 +1,4 @@
-package com.example.con_tacto.features.home.components
+package com.contacto.app.features.home.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -22,8 +22,8 @@ import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.con_tacto.core.data.Contact
-import com.example.con_tacto.core.ui.doubleTapGesture
+import com.contacto.app.core.data.Contact
+import com.contacto.app.core.ui.doubleTapGesture
 import androidx.core.graphics.toColorInt
 
 /**

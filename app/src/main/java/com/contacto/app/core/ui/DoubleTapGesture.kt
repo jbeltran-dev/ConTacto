@@ -1,4 +1,4 @@
-package com.example.con_tacto.core.ui
+package com.contacto.app.core.ui
 
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.ui.Modifier

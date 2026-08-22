@@ -1,10 +1,10 @@
-package com.example.con_tacto.features.home
+package com.contacto.app.features.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.con_tacto.core.call.PhoneCaller
-import com.example.con_tacto.core.data.Contact
-import com.example.con_tacto.core.data.sampleContacts
+import com.contacto.app.core.call.PhoneCaller
+import com.contacto.app.core.data.Contact
+import com.contacto.app.core.data.sampleContacts
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

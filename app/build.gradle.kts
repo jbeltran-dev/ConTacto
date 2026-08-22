@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.con_tacto"
+    namespace = "com.contacto.app"
     compileSdk = 37
 
     defaultConfig {
-        applicationId = "com.example.con_tacto"
+        applicationId = "com.contacto.app"
         minSdk = 24
         targetSdk = 37
         versionCode = 1

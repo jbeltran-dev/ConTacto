@@ -1,4 +1,4 @@
-package com.example.con_tacto.core.permissions
+package com.contacto.app.core.permissions
 
 import android.Manifest
 import android.content.Context

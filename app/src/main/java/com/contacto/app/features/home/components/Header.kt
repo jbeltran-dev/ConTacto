@@ -1,4 +1,4 @@
-package com.example.con_tacto.features.home.components
+package com.contacto.app.features.home.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.shape.GenericShape

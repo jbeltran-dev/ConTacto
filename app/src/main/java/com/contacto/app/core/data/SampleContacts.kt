@@ -1,4 +1,4 @@
-package com.example.con_tacto.core.data
+package com.contacto.app.core.data
 
 val sampleContacts = listOf(
     Contact(1, "Test 1", "0000000000", "#C8460A", isFavorite = true, initials = "TS"),

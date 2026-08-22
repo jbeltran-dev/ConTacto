@@ -1,4 +1,4 @@
-package com.example.con_tacto.core.data
+package com.contacto.app.core.data
 
 data class Contact(
     val id: Int,

@@ -1,4 +1,4 @@
-package com.example.con_tacto.features.home
+package com.contacto.app.features.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -14,11 +14,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.example.con_tacto.core.data.Contact
-import com.example.con_tacto.core.data.sampleContacts
-import com.example.con_tacto.features.home.components.BottomBar
-import com.example.con_tacto.features.home.components.ContactCard
-import com.example.con_tacto.features.home.components.Header
+import com.contacto.app.core.data.Contact
+import com.contacto.app.core.data.sampleContacts
+import com.contacto.app.features.home.components.BottomBar
+import com.contacto.app.features.home.components.ContactCard
+import com.contacto.app.features.home.components.Header
 
 /**
  * Composable that displays the home screen of the application.

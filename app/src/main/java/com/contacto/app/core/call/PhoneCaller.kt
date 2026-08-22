@@ -1,4 +1,4 @@
-package com.example.con_tacto.core.call
+package com.contacto.app.core.call
 
 import android.content.Context
 import android.content.Intent

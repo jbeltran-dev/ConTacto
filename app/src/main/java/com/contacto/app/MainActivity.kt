@@ -1,4 +1,4 @@
-package com.example.con_tacto
+package com.contacto.app
 
 import android.os.Bundle
 import android.widget.Toast
@@ -10,10 +10,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.con_tacto.core.call.PhoneCaller
-import com.example.con_tacto.core.permissions.PermissionManager
-import com.example.con_tacto.features.home.HomeScreen
-import com.example.con_tacto.features.home.HomeViewModel
+import com.contacto.app.core.call.PhoneCaller
+import com.contacto.app.core.permissions.PermissionManager
+import com.contacto.app.features.home.HomeScreen
+import com.contacto.app.features.home.HomeViewModel
 
 /**
  * Main entry point of the ConTacto application. Connects the UI, ViewModel, phone calling

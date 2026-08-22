@@ -1,4 +1,4 @@
-package com.example.con_tacto
+package com.contacto.app
 
 import org.junit.Test
 

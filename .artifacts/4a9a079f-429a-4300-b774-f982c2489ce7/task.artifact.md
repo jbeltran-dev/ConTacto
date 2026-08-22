@@ -1,3 +1,0 @@
-- [x] Add Compose BOM to `androidTestImplementation` and `debugImplementation` in `app/build.gradle.kts`
-- [x] Verify build with `./gradlew :app:assembleDebugAndroidTest`
-- [x] Create walkthrough

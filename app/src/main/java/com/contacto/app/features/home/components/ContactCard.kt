@@ -54,7 +54,7 @@ fun ContactCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(150.dp)
+            .height(135.dp)
             .doubleTapGesture(
                 onSingleTap = { onListen(contact) },
                 onDoubleTap = { onCall(contact) }
@@ -62,8 +62,7 @@ fun ContactCard(
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(
             containerColor = Color.Transparent
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
+        )
     ) {
         // Card background with a linear gradient derived from the accent color
         Row(
@@ -72,10 +71,10 @@ fun ContactCard(
                 .background(
                     Brush.linearGradient(
                         colorStops = arrayOf(
-                            0.00f to accentColor.lighten(0.70f),
-                            0.55f to accentColor.lighten(0.45f),
-                            0.82f to accentColor.lighten(0.15f),
-                            1.00f to accentColor.darken(0.03f)
+                            0.00f to accentColor.lighten(0.92f),
+                            0.55f to accentColor.lighten(0.79f),
+                            0.82f to accentColor.lighten(0.67f),
+                            1.00f to accentColor.lighten(0.55f)
                         ),
                         start = Offset(0f, 0f),
                         end = Offset(1600f, 500f)
@@ -163,6 +162,15 @@ fun ContactCard(
     }
 }
 
+fun Color.toContactGradient(): Brush =
+    Brush.horizontalGradient(
+        colors = listOf(
+            lighten(0.70f),
+            lighten(0.45f),
+            lighten(0.15f),
+            darken(0.03f)
+        )
+    )
 /**
  * Returns a lighter version of this [Color].
  *

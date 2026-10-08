@@ -2,41 +2,74 @@ package com.contacto.app.features.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import com.contacto.app.core.call.PhoneCaller
 import com.contacto.app.core.data.Contact
-import com.contacto.app.core.data.sampleContacts
-import kotlinx.coroutines.flow.MutableStateFlow
+import com.contacto.app.core.data.repository.ContactRepository
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
 class HomeViewModel(
+    private val repository: ContactRepository,
     private val phoneCaller: PhoneCaller
 ) : ViewModel() {
 
-    // Contact list status
-    private val _contacts = MutableStateFlow(sampleContacts)
-    val contacts: StateFlow<List<Contact>> = _contacts.asStateFlow()
+    // Stream of contacts read from Room in real time.
+    val contacts: StateFlow<List<Contact>> = repository.contacts
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = emptyList()
+        )
+
+    init {
+        // Initial load in case there are any predefined contacts.
+        viewModelScope.launch {
+            repository.seedInitialContactsIfEmpty()
+        }
+    }
 
     /**
-     * Logic for making the call to the contact
+     * Make a call to the selected contact
      */
     fun onCallContact(contact: Contact) {
         phoneCaller.makeCall(contact.phoneNumber)
     }
 
     /**
-     * Logic for listening for the name (pending implementation)
+     * Hear contact name (TTS)
      */
     fun onListenContact(contact: Contact) {
-        // The TTS (Text-to-Speech) logic will go here.
+        // Text-to-Speech Logic
     }
 
-    // Factory to inject the PhoneCaller into the ViewModel
+    /**
+     * Save a new contact to the Room database.
+     */
+    fun addContact(name: String, phoneNumber: String, hexadecimalColor: String, initials: String) {
+        viewModelScope.launch {
+            val newContact = Contact(
+                id = 0,
+                name = name,
+                phoneNumber = phoneNumber,
+                hexadecimalColor = hexadecimalColor,
+                isFavorite = false,
+                initials = initials
+            )
+            repository.addContact(newContact)
+        }
+    }
+
     companion object {
-        fun provideFactory(phoneCaller: PhoneCaller): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
+        fun provideFactory(
+            repository: ContactRepository,
+            phoneCaller: PhoneCaller
+        ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return HomeViewModel(phoneCaller) as T
+                return HomeViewModel(repository, phoneCaller) as T
             }
         }
     }

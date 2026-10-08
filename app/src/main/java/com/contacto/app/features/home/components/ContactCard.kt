@@ -48,7 +48,7 @@ fun ContactCard(
     onCall: (Contact) -> Unit
 ) {
     // Parse the contact's hex color into a Compose Color object
-    val accentColor = Color(contact.colorHex.toColorInt())
+    val accentColor = Color(contact.hexadecimalColor.toColorInt())
 
     // Main Card container with custom elevation and shape
     Card(

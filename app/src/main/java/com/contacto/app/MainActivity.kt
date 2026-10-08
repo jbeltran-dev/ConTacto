@@ -12,6 +12,8 @@ import androidx.compose.runtime.getValue
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.contacto.app.core.call.PhoneCaller
+import com.contacto.app.core.data.local.AppDatabase
+import com.contacto.app.core.data.repository.ContactRepository
 import com.contacto.app.core.permissions.PermissionManager
 import com.contacto.app.features.home.HomeScreen
 import com.contacto.app.features.home.HomeViewModel
@@ -26,17 +28,21 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        // Initialize the phone caller service outside setContent to avoid re-instantiation
+        // Initialization of the Room Database and its Repository
+        val database = AppDatabase.getInstance(this)
+        val repository = ContactRepository(database.contactDao())
+
+        // Call service initialization
         val phoneCaller = PhoneCaller(this)
 
         setContent {
             val viewModel: HomeViewModel = viewModel(
-                factory = HomeViewModel.provideFactory(phoneCaller)
+                factory = HomeViewModel.provideFactory(repository, phoneCaller)
             )
 
             val contacts by viewModel.contacts.collectAsState()
 
-            // Handles the request for the call permission.
+            // Managing call permissions
             val callPermissionLauncher = rememberLauncherForActivityResult(
                 ActivityResultContracts.RequestPermission()
             ) { isGranted ->

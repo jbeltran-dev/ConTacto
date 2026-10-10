@@ -18,6 +18,7 @@ import com.contacto.app.core.data.Contact
 import com.contacto.app.core.data.sampleContacts
 import com.contacto.app.features.home.components.BottomBar
 import com.contacto.app.features.home.components.ContactCard
+import com.contacto.app.features.home.components.EmptyContactsState
 import com.contacto.app.features.home.components.Header
 
 /**
@@ -60,18 +61,28 @@ fun HomeScreen(
                 Header()
             }
 
-            // Dynamic list of contact cards
-            items(contacts) { contact ->
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                ) {
-                    ContactCard(
-                        contact = contact,
-                        onListen = onListen,
-                        onCall = onCall
+            // Display EmptyContactsState if no contacts exist, otherwise display ContactCards
+            if (contacts.isEmpty()) {
+                item {
+                    EmptyContactsState(
+                        onAddClick = {
+                            // The dialog for adding contacts will open soon.
+                        }
                     )
+                }
+            } else {
+                items(contacts) { contact ->
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                    ) {
+                        ContactCard(
+                            contact = contact,
+                            onListen = onListen,
+                            onCall = onCall
+                        )
+                    }
                 }
             }
         }

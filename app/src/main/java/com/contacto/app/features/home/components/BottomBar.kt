@@ -1,14 +1,9 @@
 package com.contacto.app.features.home.components
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -16,40 +11,43 @@ import androidx.compose.material.icons.rounded.AddCircle
 import androidx.compose.material.icons.rounded.History
 import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.milliseconds
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
+import androidx.compose.foundation.interaction.collectIsPressedAsState
+import androidx.compose.ui.draw.scale
 
-/**
- * Displays the bottom navigation bar for the Home screen.
- *
- * The navigation bar contains three main sections:
- * - Add: Used to create or add a new contact.
- * - Home: Represents the current screen and is visually highlighted.
- * - History: Provides access to the user's contact history.
- *
- * The Home option is positioned above the navigation surface as a
- * floating circular button to make it visually prominent.
- */
 @Composable
 fun BottomBar() {
+
+    var isAddSelected by remember { mutableStateOf(false) }
+    var isAddPressed by remember { mutableStateOf(false) }
+    var isHomeSelected by remember { mutableStateOf(true) }
+
+    val scope = rememberCoroutineScope()
+    var flashJob by remember { mutableStateOf<Job?>(null) }
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(100.dp),
         contentAlignment = Alignment.BottomCenter
     ) {
-
-        // Main navigation surface with rounded top corners and elevation.
+        // Main navigation bar
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
@@ -67,39 +65,68 @@ fun BottomBar() {
                 verticalAlignment = Alignment.CenterVertically
             ) {
 
-                // Add option occupies one third of the navigation bar.
+                // Add contact
+                val itemColor = if (isAddSelected) {
+                    Color(0xFF8748B2)
+                } else {
+                    Color(0xFF77717D)
+                }
+
                 Box(
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight()
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(
+                            if (isAddPressed) Color(0xFFF0EDF3)
+                            else Color.Transparent
+                        ),
                     contentAlignment = Alignment.Center
                 ) {
+
                     Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.alpha(0.35f)
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable(
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = null
+                            ) {
+                                isAddSelected = true
+                                isHomeSelected = false
+
+                                flashJob?.cancel()
+                                isAddPressed = true
+
+                                flashJob = scope.launch {
+                                    delay(200.milliseconds)
+                                    isAddPressed = false
+                                }
+                            },
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
+
                         Icon(
                             imageVector = Icons.Rounded.AddCircle,
-                            contentDescription = null,
-                            modifier = Modifier.size(26.dp)
+                            contentDescription = "Agregar contacto",
+                            modifier = Modifier.size(26.dp),
+                            tint = itemColor
                         )
 
-                        Spacer(
-                            modifier = Modifier.height(2.dp)
-                        )
+                        Spacer(modifier = Modifier.height(2.dp))
 
                         Text(
                             text = "Agregar",
                             fontSize = 12.sp,
-                            fontWeight = FontWeight.SemiBold
+                            fontWeight = FontWeight.SemiBold,
+                            color = itemColor
                         )
                     }
                 }
 
-                // Empty center space reserved for the floating Home button.
-                Spacer(
-                    modifier = Modifier.weight(1f)
-                )
+                // Space for floating Home button
+                Spacer(modifier = Modifier.weight(1f))
 
-                // History option occupies one third of the navigation bar.
+                // History
                 Box(
                     modifier = Modifier.weight(1f),
                     contentAlignment = Alignment.Center
@@ -108,15 +135,14 @@ fun BottomBar() {
                         horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier.alpha(0.35f)
                     ) {
+
                         Icon(
                             imageVector = Icons.Rounded.History,
-                            contentDescription = null,
+                            contentDescription = "Historial",
                             modifier = Modifier.size(26.dp)
                         )
 
-                        Spacer(
-                            modifier = Modifier.height(2.dp)
-                        )
+                        Spacer(modifier = Modifier.height(2.dp))
 
                         Text(
                             text = "Historial",
@@ -128,94 +154,61 @@ fun BottomBar() {
             }
         }
 
-        // Floating Home option positioned above the navigation surface.
+        // Floating Home button
         Column(
             modifier = Modifier.align(Alignment.TopCenter),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            // Circular container used to highlight the current Home section.
+            val homeInteractionSource = remember { MutableInteractionSource() }
+            val isHomePressed by homeInteractionSource.collectIsPressedAsState()
+
+            val homeScale by animateFloatAsState(
+                targetValue = if (isHomePressed) 0.94f else 1f,
+                animationSpec = spring(
+                    dampingRatio = 0.6f,
+                    stiffness = 500f
+                ),
+                label = "homeScale"
+            )
+
             Surface(
-                modifier = Modifier.size(64.dp),
+                modifier = Modifier
+                    .size(64.dp)
+                    .scale(homeScale)
+                    .clickable(
+                        interactionSource = homeInteractionSource,
+                        indication = null
+                    ) {
+                        isHomeSelected = true
+                        isAddSelected = false
+                    },
                 shape = CircleShape,
                 color = Color(0xFF8748B2),
                 shadowElevation = 8.dp
             ) {
-                Box(
-                    contentAlignment = Alignment.Center
-                ) {
+                Box(contentAlignment = Alignment.Center) {
                     Icon(
                         imageVector = Icons.Rounded.Home,
-                        contentDescription = null,
+                        contentDescription = "Inicio",
                         tint = Color.White,
                         modifier = Modifier.size(32.dp)
                     )
                 }
             }
 
-            Spacer(
-                modifier = Modifier.height(4.dp)
-            )
+            Spacer(modifier = Modifier.height(4.dp))
 
-            // Label for the currently selected Home section.
             Text(
                 text = "Inicio",
-                color = Color(0xFF894AB1),
+                color = if (isHomeSelected) {
+                    Color(0xFF894AB1)
+                } else {
+                    Color(0xFF77717D)
+                },
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Bold
             )
         }
-    }
-}
-
-/**
- * Represents an individual item within the bottom navigation bar.
- *
- * @param icon Icon displayed for the navigation item.
- * @param text Text label displayed below the icon.
- * @param selected Indicates whether this item is currently selected.
- * @param selectedColor Color used when the item is selected.
- * @param onClick Callback invoked when the user taps the navigation item.
- */
-@Composable
-private fun BottomItem(
-    icon: ImageVector,
-    text: String,
-    selected: Boolean,
-    selectedColor: Color,
-    onClick: () -> Unit
-) {
-
-    // Selected items use the provided accent color; unselected items use a neutral dark gray.
-    val color = if (selected) {
-        selectedColor
-    } else {
-        Color(0xFF555555)
-    }
-
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-
-        // Clickable icon button for the navigation item.
-        IconButton(
-            onClick = onClick,
-            modifier = Modifier.size(36.dp)
-        ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = text,
-                tint = color,
-                modifier = Modifier.size(25.dp)
-            )
-        }
-
-        // Navigation item label.
-        Text(
-            text = text,
-            color = color,
-            fontSize = 12.sp
-        )
     }
 }
